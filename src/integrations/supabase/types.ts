@@ -9,7 +9,169 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      account_sizes: {
+        Row: {
+          account_size: string
+          created_at: string | null
+          discount: number | null
+          firm_id: string | null
+          id: string
+          payout_rate: number | null
+          platform: string | null
+          price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_size: string
+          created_at?: string | null
+          discount?: number | null
+          firm_id?: string | null
+          id?: string
+          payout_rate?: number | null
+          platform?: string | null
+          price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_size?: string
+          created_at?: string | null
+          discount?: number | null
+          firm_id?: string | null
+          id?: string
+          payout_rate?: number | null
+          platform?: string | null
+          price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_sizes_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "propfirms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      propfirms: {
+        Row: {
+          cons: string[] | null
+          coupon_code: string | null
+          created_at: string | null
+          description: string | null
+          discount: number | null
+          features: string[] | null
+          id: string
+          logo_url: string | null
+          max_funding: number | null
+          name: string
+          original_price: number | null
+          payout_rate: number | null
+          platform: string | null
+          price: number | null
+          profit_split: number | null
+          pros: string[] | null
+          regulation_country: string | null
+          review_score: number | null
+          tags: string[] | null
+          trading_levels: string[] | null
+          trust_rating: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cons?: string[] | null
+          coupon_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          discount?: number | null
+          features?: string[] | null
+          id?: string
+          logo_url?: string | null
+          max_funding?: number | null
+          name: string
+          original_price?: number | null
+          payout_rate?: number | null
+          platform?: string | null
+          price?: number | null
+          profit_split?: number | null
+          pros?: string[] | null
+          regulation_country?: string | null
+          review_score?: number | null
+          tags?: string[] | null
+          trading_levels?: string[] | null
+          trust_rating?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cons?: string[] | null
+          coupon_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          discount?: number | null
+          features?: string[] | null
+          id?: string
+          logo_url?: string | null
+          max_funding?: number | null
+          name?: string
+          original_price?: number | null
+          payout_rate?: number | null
+          platform?: string | null
+          price?: number | null
+          profit_split?: number | null
+          pros?: string[] | null
+          regulation_country?: string | null
+          review_score?: number | null
+          tags?: string[] | null
+          trading_levels?: string[] | null
+          trust_rating?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          expert_score: number | null
+          expert_summary: string | null
+          firm_id: string | null
+          id: string
+          payout_speed: string | null
+          trust_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          expert_score?: number | null
+          expert_summary?: string | null
+          firm_id?: string | null
+          id?: string
+          payout_speed?: string | null
+          trust_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          expert_score?: number | null
+          expert_summary?: string | null
+          firm_id?: string | null
+          id?: string
+          payout_speed?: string | null
+          trust_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "propfirms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -3,7 +3,9 @@ import { Hero } from "@/components/Hero";
 import { SearchSection } from "@/components/SearchSection";
 import { CTAButtons } from "@/components/CTAButtons";
 import { StatsSection } from "@/components/StatsSection";
+import { TopFirmsShowcase } from "@/components/TopFirmsShowcase";
 import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -11,8 +13,10 @@ const Index = () => {
       <Navigation />
       <Hero />
       <SearchSection />
+      <TopFirmsShowcase />
       <CTAButtons />
       <StatsSection />
+      <Footer />
     </div>
   );
 };
