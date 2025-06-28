@@ -53,6 +53,59 @@ export type Database = {
           },
         ]
       }
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      cheap_firms: {
+        Row: {
+          created_at: string
+          firm_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          firm_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          firm_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cheap_firms_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: true
+            referencedRelation: "propfirms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       propfirms: {
         Row: {
           cons: string[] | null
@@ -167,6 +220,35 @@ export type Database = {
             foreignKeyName: "reviews_firm_id_fkey"
             columns: ["firm_id"]
             isOneToOne: false
+            referencedRelation: "propfirms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      top_firms: {
+        Row: {
+          created_at: string
+          firm_id: string
+          id: string
+          rank: number
+        }
+        Insert: {
+          created_at?: string
+          firm_id: string
+          id?: string
+          rank: number
+        }
+        Update: {
+          created_at?: string
+          firm_id?: string
+          id?: string
+          rank?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "top_firms_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: true
             referencedRelation: "propfirms"
             referencedColumns: ["id"]
           },
