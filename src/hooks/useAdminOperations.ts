@@ -52,18 +52,20 @@ export const useAdminOperations = () => {
         platform: firmData.platform || null,
         regulation: firmData.regulation || null,
         evaluation_model: firmData.evaluation_model || null,
-        max_funding: firmData.max_funding || null,
+        max_funding: firmData.max_funding ? parseFloat(firmData.max_funding.replace(/[$,]/g, '')) || null : null,
         starting_fee: firmData.starting_fee || firmData.price || 0,
         funding_amount: firmData.funding_amount || null,
         tags: [],
         logo_url: null,
         affiliate_url: null,
-        user_review_count: 0
+        user_review_count: 0,
+        trading_levels: [],
+        regulation_country: firmData.regulation || null
       };
 
       const { data, error } = await supabase
         .from('propfirms')
-        .insert([completeData])
+        .insert(completeData)
         .select()
         .single();
 
@@ -90,6 +92,7 @@ export const useAdminOperations = () => {
       const updateData = {
         ...firmData,
         category_id: firmData.category_id === 'none' ? null : firmData.category_id,
+        max_funding: firmData.max_funding ? parseFloat(firmData.max_funding.replace(/[$,]/g, '')) || null : null,
         updated_at: new Date().toISOString()
       };
 

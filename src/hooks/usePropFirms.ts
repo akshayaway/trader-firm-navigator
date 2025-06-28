@@ -21,6 +21,6 @@ export const usePropFirms = () => {
       return data;
     },
     staleTime: 0, // Always refetch when requested
-    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 };
