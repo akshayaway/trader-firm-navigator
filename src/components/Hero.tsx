@@ -16,16 +16,29 @@ export const Hero = () => {
           directory.
         </p>
         
-        {/* Trading Level Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:scale-105">
-            🟢 Beginner Firms
-          </button>
+        {/* Updated Button Layout */}
+        <div className="flex flex-wrap justify-center gap-6 mb-8">
           <button className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105">
-            🔵 Intermediate Firms
+            Explore All Firms
           </button>
           <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/25 hover:scale-105">
-            🟣 Pro Firms
+            Compare Firms
+          </button>
+        </div>
+
+        {/* New Buttons */}
+        <div className="flex flex-wrap justify-center gap-6">
+          <button
+            id="cheapest-cost-btn"
+            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:scale-105"
+          >
+            📉 Cheapest Cost
+          </button>
+          <button
+            id="top5-firms-btn"
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/25 hover:scale-105"
+          >
+            🔥 Top 5 PropFirms
           </button>
         </div>
       </div>

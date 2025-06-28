@@ -13,6 +13,14 @@ const Reviews = () => {
     review.propfirms?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <span key={i} className={i < rating ? "text-yellow-400" : "text-gray-600"}>
+        ⭐
+      </span>
+    ));
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
@@ -65,39 +73,47 @@ const Reviews = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredReviews.map((review) => (
-              <div key={review.id} className="bg-slate-800/60 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all transform hover:scale-105">
+              <div key={review.id} className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                     <span className="text-2xl font-bold text-white">
                       {review.propfirms?.name?.charAt(0) || "?"}
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">{review.propfirms?.name}</h3>
+                    <Link
+                      to={`/firm/${review.propfirms?.id}`}
+                      className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                    >
+                      {review.propfirms?.name}
+                    </Link>
                     <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">⭐</span>
-                      <span className="text-white font-bold">{review.expert_score || "N/A"}</span>
-                      <span className="text-gray-400">Expert Rating</span>
+                      {renderStars(review.expert_score || 0)}
+                      <span className="text-gray-600 text-sm">({review.expert_score || "N/A"})</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-blue-600 inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 text-white">
+                <div className="bg-blue-100 inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 text-blue-800">
                   {review.category || "Review"}
                 </div>
 
+                <p className="text-gray-700 mb-4 line-clamp-3">
+                  {review.expert_summary || "No summary available"}
+                </p>
+
                 <div className="space-y-2 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Category:</span>
-                    <span className="text-white">{review.category || "General"}</span>
+                    <span className="text-gray-600">Trust Score:</span>
+                    <span className="text-green-600 font-bold">{review.trust_score || "N/A"}/10</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Trust Score:</span>
-                    <span className="text-green-400 font-bold">{review.trust_score || "N/A"}/10</span>
+                    <span className="text-gray-600">Payout Speed:</span>
+                    <span className="text-purple-600 font-bold">{review.payout_speed || "N/A"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Payout Speed:</span>
-                    <span className="text-purple-400 font-bold">{review.payout_speed || "N/A"}</span>
+                    <span className="text-gray-600">Reviewer:</span>
+                    <span className="text-gray-800 font-medium">Expert Review</span>
                   </div>
                 </div>
 

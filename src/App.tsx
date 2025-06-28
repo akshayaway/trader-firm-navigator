@@ -12,6 +12,7 @@ import Compare from "./pages/Compare";
 import CheapFirms from "./pages/CheapFirms";
 import TopFirms from "./pages/TopFirms";
 import FullReview from "./pages/FullReview";
+import FirmDetail from "./pages/FirmDetail";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/compare" element={<Compare />} />
             <Route path="/cheap-firms" element={<CheapFirms />} />
             <Route path="/top-firms" element={<TopFirms />} />
+            <Route path="/firm/:firmId" element={<FirmDetail />} />
             <Route path="/firm/:firmId" element={<FullReview />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
