@@ -32,6 +32,9 @@ export const Navigation = () => {
             <Link to="/compare" className="text-gray-300 hover:text-white transition-colors">
               Compare
             </Link>
+            <Link to="/admin-access" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+              Admin
+            </Link>
             {isAdmin && (
               <Link to="/admin" className="text-blue-400 hover:text-blue-300 transition-colors font-semibold">
                 Admin Dashboard

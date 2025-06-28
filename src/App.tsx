@@ -15,6 +15,7 @@ import FullReview from "./pages/FullReview";
 import FirmDetail from "./pages/FirmDetail";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import AdminAccess from "./pages/AdminAccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,9 +35,10 @@ const App = () => (
             <Route path="/cheap-firms" element={<CheapFirms />} />
             <Route path="/top-firms" element={<TopFirms />} />
             <Route path="/firm/:firmId" element={<FirmDetail />} />
-            <Route path="/firm/:firmId" element={<FullReview />} />
+            <Route path="/full-review/:firmId" element={<FullReview />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin-access" element={<AdminAccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

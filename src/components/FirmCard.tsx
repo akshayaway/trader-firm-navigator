@@ -30,7 +30,7 @@ export const FirmCard = ({ firm }: FirmCardProps) => {
             firm.tags.includes('cheap') ? 'bg-green-100 text-green-800' :
             'bg-blue-100 text-blue-800'
           }`}>
-            {firm.tags[0].toUpperCase()}
+            {firm.tags[0]?.toUpperCase() || 'FEATURED'}
           </span>
         )}
       </div>

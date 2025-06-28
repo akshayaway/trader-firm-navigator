@@ -41,7 +41,13 @@ export const FirmGridDisplay: React.FC<FirmGridDisplayProps> = ({ firms, title, 
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {firms.map((firm) => (
-            <FirmCard key={firm.id} firm={firm} />
+            <FirmCard 
+              key={firm.id} 
+              firm={{
+                ...firm,
+                coupon_code: firm.coupon_code || 'NO_CODE'
+              }} 
+            />
           ))}
         </div>
         
