@@ -1,21 +1,36 @@
-
-import { Hero } from "@/components/Hero";
-import { SearchSection } from "@/components/SearchSection";
-import { CTAButtons } from "@/components/CTAButtons";
-import { StatsSection } from "@/components/StatsSection";
-import { TopFirmsShowcase } from "@/components/TopFirmsShowcase";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
+import React, { useState, useEffect } from 'react';
+import Navbar from "@/components/Navigation";
+import Hero from "@/components/Hero";
+import StatsSection from "@/components/StatsSection";
+import TopFirmsShowcase from "@/components/TopFirmsShowcase";
+import Footer from "@/components/Footer";
+import { AdminPanel } from "@/components/AdminPanel";
 
 const Index = () => {
+  const [isAdminMode, setIsAdminMode] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in as admin
+    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
+    setIsAdminMode(isAdmin);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      <Navigation />
+      <Navbar />
       <Hero />
-      <SearchSection />
-      <TopFirmsShowcase />
-      <CTAButtons />
+      
+      {/* Admin Panel - only show if admin is logged in */}
+      {isAdminMode && (
+        <div className="py-12 px-4">
+          <div className="max-w-7xl mx-auto">
+            <AdminPanel />
+          </div>
+        </div>
+      )}
+      
       <StatsSection />
+      <TopFirmsShowcase />
       <Footer />
     </div>
   );
