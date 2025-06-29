@@ -1,5 +1,5 @@
 
-import { useAuth } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -11,38 +11,21 @@ import { AdminCheapFirms } from "@/components/admin/AdminCheapFirms";
 import { AdminTopFirms } from "@/components/admin/AdminTopFirms";
 
 const Admin = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  useEffect(() => {
+    const adminStatus = localStorage.getItem('adminLoggedIn');
+    setIsLoggedIn(adminStatus === 'true');
+  }, []);
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-        <Navigation />
-        <div className="py-12 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Card className="bg-slate-800/80 backdrop-blur-sm border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Access Denied</CardTitle>
-                <CardDescription className="text-gray-400">
-                  You don't have admin privileges to access this dashboard.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-300 mb-4">
-                  Contact an administrator to request admin access.
-                </p>
-                <Button onClick={() => signOut()} variant="outline">
-                  Sign Out
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
+  const handleLogout = () => {
+    localStorage.removeItem('adminLoggedIn');
+    setIsLoggedIn(false);
+    window.location.href = '/';
+  };
+
+  if (!isLoggedIn) {
+    return <Navigate to="/admin-access" replace />;
   }
 
   return (
@@ -55,7 +38,7 @@ const Admin = () => {
               <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
               <p className="text-gray-300">Manage prop firms, reviews, and categories</p>
             </div>
-            <Button onClick={() => signOut()} variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
+            <Button onClick={handleLogout} variant="outline" className="border-slate-600 text-white hover:bg-slate-700">
               Sign Out
             </Button>
           </div>

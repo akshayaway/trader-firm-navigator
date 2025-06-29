@@ -1,49 +1,42 @@
 
 import { useState } from "react";
 import { usePropFirms } from "@/hooks/usePropFirms";
+import { useAdminOperations } from "@/hooks/useAdminOperations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
 export const AdminFirms = () => {
   const { data: firms, isLoading } = usePropFirms();
+  const { addFirm, updateFirm, deleteFirm } = useAdminOperations();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    description: "",
     price: "",
-    original_price: "",
-    discount: "",
-    coupon_code: "",
     review_score: "",
     trust_rating: "",
-    profit_split: "",
-    payout_rate: "",
     platform: "",
-    description: "",
+    payout_rate: "",
   });
 
   const resetForm = () => {
     setFormData({
       name: "",
+      description: "",
       price: "",
-      original_price: "",
-      discount: "",
-      coupon_code: "",
       review_score: "",
       trust_rating: "",
-      profit_split: "",
-      payout_rate: "",
       platform: "",
-      description: "",
+      payout_rate: "",
     });
     setIsEditing(null);
     setIsAdding(false);
@@ -54,96 +47,65 @@ export const AdminFirms = () => {
     
     const firmData = {
       name: formData.name,
-      price: formData.price ? parseFloat(formData.price) : null,
-      original_price: formData.original_price ? parseFloat(formData.original_price) : null,
-      discount: formData.discount ? parseFloat(formData.discount) : null,
-      coupon_code: formData.coupon_code || null,
-      review_score: formData.review_score ? parseFloat(formData.review_score) : null,
-      trust_rating: formData.trust_rating ? parseFloat(formData.trust_rating) : null,
-      profit_split: formData.profit_split ? parseFloat(formData.profit_split) : null,
-      payout_rate: formData.payout_rate ? parseFloat(formData.payout_rate) : null,
-      platform: formData.platform || null,
-      description: formData.description || null,
+      description: formData.description,
+      price: formData.price ? parseFloat(formData.price) : 0,
+      review_score: formData.review_score ? parseFloat(formData.review_score) : 0,
+      trust_rating: formData.trust_rating ? parseFloat(formData.trust_rating) : 0,
+      platform: formData.platform,
+      payout_rate: formData.payout_rate ? parseFloat(formData.payout_rate) : 0,
     };
 
     try {
       if (isEditing) {
-        const { error } = await supabase
-          .from("propfirms")
-          .update(firmData)
-          .eq("id", isEditing);
-        
-        if (error) throw error;
-        
-        toast({
-          title: "Success",
-          description: "Firm updated successfully!",
-        });
+        const result = await updateFirm(isEditing, firmData);
+        if (result.success) {
+          toast({ title: "Success", description: "Firm updated successfully!" });
+        } else {
+          toast({ title: "Error", description: result.error, variant: "destructive" });
+        }
       } else {
-        const { error } = await supabase
-          .from("propfirms")
-          .insert([firmData]);
-        
-        if (error) throw error;
-        
-        toast({
-          title: "Success",
-          description: "Firm added successfully!",
-        });
+        const result = await addFirm(firmData);
+        if (result.success) {
+          toast({ title: "Success", description: "Firm added successfully!" });
+        } else {
+          toast({ title: "Error", description: result.error, variant: "destructive" });
+        }
       }
       
       queryClient.invalidateQueries({ queryKey: ["propfirms"] });
       resetForm();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
   const handleEdit = (firm: any) => {
     setFormData({
       name: firm.name || "",
+      description: firm.description || "",
       price: firm.price?.toString() || "",
-      original_price: firm.original_price?.toString() || "",
-      discount: firm.discount?.toString() || "",
-      coupon_code: firm.coupon_code || "",
       review_score: firm.review_score?.toString() || "",
       trust_rating: firm.trust_rating?.toString() || "",
-      profit_split: firm.profit_split?.toString() || "",
-      payout_rate: firm.payout_rate?.toString() || "",
       platform: firm.platform || "",
-      description: firm.description || "",
+      payout_rate: firm.payout_rate?.toString() || "",
     });
     setIsEditing(firm.id);
     setIsAdding(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this firm?")) return;
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
     
     try {
-      const { error } = await supabase
-        .from("propfirms")
-        .delete()
-        .eq("id", id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "Firm deleted successfully!",
-      });
-      
-      queryClient.invalidateQueries({ queryKey: ["propfirms"] });
+      const result = await deleteFirm(id);
+      if (result.success) {
+        toast({ title: "Success", description: "Firm deleted successfully!" });
+        queryClient.invalidateQueries({ queryKey: ["propfirms"] });
+      } else {
+        toast({ title: "Error", description: result.error, variant: "destructive" });
+      }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
@@ -179,11 +141,11 @@ export const AdminFirms = () => {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
                   className="bg-slate-700 border-slate-600 text-white"
+                  required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="platform" className="text-white">Platform</Label>
                 <Input
@@ -195,7 +157,7 @@ export const AdminFirms = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price" className="text-white">Price</Label>
+                <Label htmlFor="price" className="text-white">Price ($)</Label>
                 <Input
                   id="price"
                   type="number"
@@ -207,41 +169,19 @@ export const AdminFirms = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="original_price" className="text-white">Original Price</Label>
+                <Label htmlFor="payout_rate" className="text-white">Payout Rate (%)</Label>
                 <Input
-                  id="original_price"
+                  id="payout_rate"
                   type="number"
                   step="0.01"
-                  value={formData.original_price}
-                  onChange={(e) => setFormData({ ...formData, original_price: e.target.value })}
+                  value={formData.payout_rate}
+                  onChange={(e) => setFormData({ ...formData, payout_rate: e.target.value })}
                   className="bg-slate-700 border-slate-600 text-white"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="discount" className="text-white">Discount (%)</Label>
-                <Input
-                  id="discount"
-                  type="number"
-                  step="0.01"
-                  value={formData.discount}
-                  onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="coupon_code" className="text-white">Coupon Code</Label>
-                <Input
-                  id="coupon_code"
-                  value={formData.coupon_code}
-                  onChange={(e) => setFormData({ ...formData, coupon_code: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="review_score" className="text-white">Review Score</Label>
+                <Label htmlFor="review_score" className="text-white">Review Score (1-5)</Label>
                 <Input
                   id="review_score"
                   type="number"
@@ -255,7 +195,7 @@ export const AdminFirms = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="trust_rating" className="text-white">Trust Rating</Label>
+                <Label htmlFor="trust_rating" className="text-white">Trust Rating (1-10)</Label>
                 <Input
                   id="trust_rating"
                   type="number"
@@ -264,34 +204,6 @@ export const AdminFirms = () => {
                   max="10"
                   value={formData.trust_rating}
                   onChange={(e) => setFormData({ ...formData, trust_rating: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="profit_split" className="text-white">Profit Split (%)</Label>
-                <Input
-                  id="profit_split"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  value={formData.profit_split}
-                  onChange={(e) => setFormData({ ...formData, profit_split: e.target.value })}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="payout_rate" className="text-white">Payout Rate (%)</Label>
-                <Input
-                  id="payout_rate"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  value={formData.payout_rate}
-                  onChange={(e) => setFormData({ ...formData, payout_rate: e.target.value })}
                   className="bg-slate-700 border-slate-600 text-white"
                 />
               </div>
@@ -338,7 +250,7 @@ export const AdminFirms = () => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => handleDelete(firm.id)}
+                    onClick={() => handleDelete(firm.id, firm.name)}
                     className="text-red-400 hover:bg-slate-700"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -346,15 +258,22 @@ export const AdminFirms = () => {
                 </div>
               </div>
               <CardDescription className="text-gray-400">
-                {firm.platform} • ${firm.price} • ⭐ {firm.review_score}
+                ${firm.price} • ⭐ {firm.review_score} • Trust: {firm.trust_rating}/10
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-300 text-sm">{firm.description}</p>
+              <p className="text-gray-300 text-sm line-clamp-3">{firm.description}</p>
+              <p className="text-gray-400 text-xs mt-2">Platform: {firm.platform}</p>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {firms?.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">No firms found. Add one to get started!</p>
+        </div>
+      )}
     </div>
   );
 };
