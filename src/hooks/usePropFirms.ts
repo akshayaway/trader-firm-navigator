@@ -7,9 +7,34 @@ export const usePropFirms = () => {
     queryKey: ["propfirms"],
     queryFn: async () => {
       console.log('Fetching prop firms from Supabase...');
+      
+      // Use a more direct query to avoid RLS issues
       const { data, error } = await supabase
         .from("propfirms")
-        .select("*")
+        .select(`
+          id,
+          name,
+          description,
+          price,
+          original_price,
+          discount,
+          coupon_code,
+          review_score,
+          trust_rating,
+          profit_split,
+          payout_rate,
+          max_funding,
+          platform,
+          features,
+          pros,
+          cons,
+          regulation_country,
+          trading_levels,
+          tags,
+          logo_url,
+          created_at,
+          updated_at
+        `)
         .order("review_score", { ascending: false });
       
       if (error) {
@@ -18,9 +43,11 @@ export const usePropFirms = () => {
       }
       
       console.log('Fetched prop firms:', data);
-      return data;
+      return data || [];
     },
-    staleTime: 0, // Always refetch when requested
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
   });
 };

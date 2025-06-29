@@ -31,12 +31,10 @@ export const useAdminOperations = () => {
     try {
       console.log('Adding firm with data:', firmData);
       
-      // Ensure required fields have values
+      // Clean data structure to match database schema exactly
       const completeData = {
         name: firmData.name || '',
-        brand: firmData.brand || firmData.name || '',
-        slug: firmData.slug || firmData.name?.toLowerCase().replace(/\s+/g, '-') || '',
-        category_id: firmData.category_id === 'none' ? null : (firmData.category_id || null),
+        description: firmData.description || null,
         price: firmData.price || 0,
         original_price: firmData.original_price || firmData.price || 0,
         discount: firmData.discount || 0,
@@ -45,22 +43,15 @@ export const useAdminOperations = () => {
         trust_rating: firmData.trust_rating || 0,
         profit_split: firmData.profit_split || 0,
         payout_rate: firmData.payout_rate || 0,
-        description: firmData.description || null,
         features: firmData.features || [],
         pros: firmData.pros || [],
         cons: firmData.cons || [],
         platform: firmData.platform || null,
-        regulation: firmData.regulation || null,
-        evaluation_model: firmData.evaluation_model || null,
         max_funding: firmData.max_funding ? parseFloat(firmData.max_funding.replace(/[$,]/g, '')) || null : null,
-        starting_fee: firmData.starting_fee || firmData.price || 0,
-        funding_amount: firmData.funding_amount || null,
         tags: [],
         logo_url: null,
-        affiliate_url: null,
-        user_review_count: 0,
-        trading_levels: [],
-        regulation_country: firmData.regulation || null
+        regulation_country: firmData.regulation || null,
+        trading_levels: []
       };
 
       const { data, error } = await supabase
@@ -91,7 +82,6 @@ export const useAdminOperations = () => {
       
       const updateData = {
         ...firmData,
-        category_id: firmData.category_id === 'none' ? null : firmData.category_id,
         max_funding: firmData.max_funding ? parseFloat(firmData.max_funding.replace(/[$,]/g, '')) || null : null,
         updated_at: new Date().toISOString()
       };
