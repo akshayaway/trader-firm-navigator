@@ -8,7 +8,7 @@ import { AdminFirms } from "@/components/admin/AdminFirms";
 import { AdminReviews } from "@/components/admin/AdminReviews";
 import { AdminCheapFirms } from "@/components/admin/AdminCheapFirms";
 import { AdminTopFirms } from "@/components/admin/AdminTopFirms";
-import { Shield, LogOut } from "lucide-react";
+import { Shield, LogOut, Database, Users, Star, TrendingUp } from "lucide-react";
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,10 +32,15 @@ const Admin = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="bg-white/20 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white mx-auto"></div>
-          <p className="text-white/80 mt-4 text-center">Loading Admin Panel...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="glass-card p-8 text-center">
+          <div className="loading-dots mx-auto mb-4">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p className="text-white/80 text-lg">Loading Admin Dashboard...</p>
         </div>
       </div>
     );
@@ -46,77 +51,104 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
+    <div className="min-h-screen">
       <Navigation />
       <div className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
+          {/* Professional Header */}
+          <div className="glass-header p-8 mb-8">
             <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-                  <Shield className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl glow-purple">
+                  <Shield className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  <h1 className="text-4xl font-bold gradient-text mb-2">
                     Admin Dashboard
                   </h1>
-                  <p className="text-gray-300/80">Manage prop firms, reviews, and categories</p>
+                  <p className="text-white/70 text-lg">Manage your prop trading platform with ease</p>
                 </div>
               </div>
               <Button 
                 onClick={handleLogout} 
-                variant="outline" 
-                className="border-white/20 text-white hover:bg-white/10 backdrop-blur-sm"
+                className="btn-danger"
               >
-                <LogOut className="w-4 h-4 mr-2" />
+                <LogOut className="w-5 h-5 mr-2" />
                 Sign Out
               </Button>
             </div>
           </div>
 
-          {/* Tabs */}
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="stats-card text-center">
+              <Database className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-bold text-white mb-1">12</h3>
+              <p className="text-white/60">Total Firms</p>
+            </div>
+            <div className="stats-card text-center">
+              <Users className="w-8 h-8 text-blue-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-bold text-white mb-1">1,234</h3>
+              <p className="text-white/60">Active Users</p>
+            </div>
+            <div className="stats-card text-center">
+              <Star className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-bold text-white mb-1">4.8</h3>
+              <p className="text-white/60">Avg Rating</p>
+            </div>
+            <div className="stats-card text-center">
+              <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-3" />
+              <h3 className="text-2xl font-bold text-white mb-1">+23%</h3>
+              <p className="text-white/60">Growth</p>
+            </div>
+          </div>
+
+          {/* Admin Tabs */}
           <Tabs defaultValue="firms" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border border-white/20 mb-8">
+            <TabsList className="grid w-full grid-cols-4 glass-header mb-8 p-2">
               <TabsTrigger 
                 value="firms" 
-                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
               >
+                <Database className="w-4 h-4 mr-2" />
                 All Firms
               </TabsTrigger>
               <TabsTrigger 
                 value="reviews" 
-                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
               >
+                <Star className="w-4 h-4 mr-2" />
                 Reviews
               </TabsTrigger>
               <TabsTrigger 
                 value="cheap" 
-                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
               >
+                <TrendingUp className="w-4 h-4 mr-2" />
                 Cheap Firms
               </TabsTrigger>
               <TabsTrigger 
                 value="top" 
-                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
               >
+                <Users className="w-4 h-4 mr-2" />
                 Top Firms
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="firms">
+            <TabsContent value="firms" className="mt-0">
               <AdminFirms />
             </TabsContent>
 
-            <TabsContent value="reviews">
+            <TabsContent value="reviews" className="mt-0">
               <AdminReviews />
             </TabsContent>
 
-            <TabsContent value="cheap">
+            <TabsContent value="cheap" className="mt-0">
               <AdminCheapFirms />
             </TabsContent>
 
-            <TabsContent value="top">
+            <TabsContent value="top" className="mt-0">
               <AdminTopFirms />
             </TabsContent>
           </Tabs>

@@ -16,14 +16,23 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen">
       <Navigation />
       <Hero />
       
       {isAdminMode && (
         <div className="py-12 px-4">
           <div className="max-w-7xl mx-auto">
-            <AdminPanel />
+            <div className="glass-card p-8 mb-8">
+              <h2 className="text-2xl font-bold gradient-text-purple mb-4">Quick Admin Access</h2>
+              <p className="text-white/70 mb-4">You're logged in as admin. Access the full dashboard for advanced management.</p>
+              <a 
+                href="/admin" 
+                className="btn-premium inline-flex items-center"
+              >
+                Go to Admin Dashboard
+              </a>
+            </div>
           </div>
         </div>
       )}
