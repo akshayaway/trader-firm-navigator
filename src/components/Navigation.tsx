@@ -28,13 +28,13 @@ export const Navigation = () => {
               All Firms
             </Link>
             <Link to="/top-firms" className="text-gray-300 hover:text-white transition-colors">
-              Reviews
+              Top Firms
             </Link>
             <Link to="/reviews" className="text-gray-300 hover:text-white transition-colors">
-              Compare
+              Reviews
             </Link>
             <Link to="/compare" className="text-gray-300 hover:text-white transition-colors">
-              Blog
+              Compare
             </Link>
             <Link to="/admin-access" className="text-yellow-400 hover:text-yellow-300 transition-colors">
               Admin

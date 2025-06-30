@@ -3,45 +3,28 @@ import { Navigation } from "@/components/Navigation";
 import { useParams } from "react-router-dom";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Mock data for full review
-const mockFirmDetails = {
-  "1": {
-    name: "FTMO",
-    logo_url: "",
-    reviewScore: 4.9,
-    trustRating: 10,
-    expertSummary: "FTMO stands out as one of the most reputable prop trading firms in the industry. With a proven track record, excellent customer support, and transparent trading conditions, it's our top recommendation for serious traders.",
-    pros: [
-      "Highest trust rating in the industry",
-      "Fast and reliable payouts",
-      "Excellent customer support",
-      "Transparent trading conditions",
-      "MetaTrader 4/5 platform support"
-    ],
-    cons: [
-      "Higher evaluation fees",
-      "Strict risk management rules",
-      "Limited platform options"
-    ],
-    profitSplit: 90,
-    payoutSpeed: "1-2 business days",
-    platform: "MetaTrader 4/5",
-    regulation: "Czech Republic",
-    maxFunding: 400000,
-    accountSizes: [
-      { size: "5K", price: 99, discount: 10, platform: "MT4/MT5", payoutRate: 90 },
-      { size: "10K", price: 155, discount: 15, platform: "MT4/MT5", payoutRate: 90 },
-      { size: "25K", price: 345, discount: 20, platform: "MT4/MT5", payoutRate: 90 },
-      { size: "50K", price: 599, discount: 25, platform: "MT4/MT5", payoutRate: 90 },
-      { size: "100K", price: 1080, discount: 30, platform: "MT4/MT5", payoutRate: 90 }
-    ]
-  }
-};
+import { usePropFirms } from "@/hooks/usePropFirms";
+import { useAccountSizes } from "@/hooks/useAccountSizes";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const FullReview = () => {
   const { firmId } = useParams();
-  const firm = mockFirmDetails[firmId as keyof typeof mockFirmDetails];
+  const { data: firms, isLoading: firmsLoading } = usePropFirms();
+  const { data: accountSizes, isLoading: accountSizesLoading } = useAccountSizes(firmId);
+  
+  const firm = firms?.find(f => f.id === firmId);
+
+  if (firmsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <Navigation />
+        <div className="py-24 px-4 text-center">
+          <LoadingSpinner size="lg" />
+          <p className="text-gray-300 mt-4">Loading firm details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!firm) {
     return (
@@ -55,6 +38,12 @@ const FullReview = () => {
     );
   }
 
+  const handleBuyNow = (url?: string) => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       <Navigation />
@@ -64,18 +53,22 @@ const FullReview = () => {
           <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg p-8 border border-slate-700/50 mb-8">
             <div className="flex items-center gap-6 mb-6">
               <div className="w-20 h-20 bg-slate-700 rounded-lg flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">{firm.name.charAt(0)}</span>
+                {firm.logo_url ? (
+                  <img src={firm.logo_url} alt={firm.name} className="w-full h-full object-contain rounded-lg" />
+                ) : (
+                  <span className="text-3xl font-bold text-white">{firm.name.charAt(0)}</span>
+                )}
               </div>
               <div>
                 <h1 className="text-4xl font-bold text-white mb-2">{firm.name}</h1>
                 <div className="flex items-center gap-4">
-                  <span className="text-yellow-400 text-xl">⭐ {firm.reviewScore}</span>
-                  <span className="text-green-400 font-bold">Trust: {firm.trustRating}/10</span>
-                  <span className="text-blue-400 font-bold">Profit Split: {firm.profitSplit}%</span>
+                  <span className="text-yellow-400 text-xl">⭐ {firm.review_score || 'N/A'}</span>
+                  <span className="text-green-400 font-bold">Trust: {firm.trust_rating || 'N/A'}/10</span>
+                  <span className="text-blue-400 font-bold">Profit Split: {firm.profit_split || 'N/A'}%</span>
                 </div>
               </div>
             </div>
-            <p className="text-gray-300 text-lg leading-relaxed">{firm.expertSummary}</p>
+            <p className="text-gray-300 text-lg leading-relaxed">{firm.description || 'No description available.'}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -86,12 +79,16 @@ const FullReview = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {firm.pros.map((pro, index) => (
-                    <li key={index} className="text-gray-300 flex items-start gap-2">
-                      <span className="text-green-400 mt-1">•</span>
-                      {pro}
-                    </li>
-                  ))}
+                  {firm.pros && firm.pros.length > 0 ? (
+                    firm.pros.map((pro, index) => (
+                      <li key={index} className="text-gray-300 flex items-start gap-2">
+                        <span className="text-green-400 mt-1">•</span>
+                        {pro}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-400">No pros listed</li>
+                  )}
                 </ul>
               </CardContent>
             </Card>
@@ -103,12 +100,16 @@ const FullReview = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {firm.cons.map((con, index) => (
-                    <li key={index} className="text-gray-300 flex items-start gap-2">
-                      <span className="text-red-400 mt-1">•</span>
-                      {con}
-                    </li>
-                  ))}
+                  {firm.cons && firm.cons.length > 0 ? (
+                    firm.cons.map((con, index) => (
+                      <li key={index} className="text-gray-300 flex items-start gap-2">
+                        <span className="text-red-400 mt-1">•</span>
+                        {con}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-400">No cons listed</li>
+                  )}
                 </ul>
               </CardContent>
             </Card>
@@ -122,20 +123,22 @@ const FullReview = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
-                  <h4 className="text-gray-400 text-sm mb-1">Payout Speed</h4>
-                  <p className="text-white font-semibold">{firm.payoutSpeed}</p>
+                  <h4 className="text-gray-400 text-sm mb-1">Payout Rate</h4>
+                  <p className="text-white font-semibold">{firm.payout_rate || 'N/A'}%</p>
                 </div>
                 <div>
                   <h4 className="text-gray-400 text-sm mb-1">Platform</h4>
-                  <p className="text-white font-semibold">{firm.platform}</p>
+                  <p className="text-white font-semibold">{firm.platform || 'N/A'}</p>
                 </div>
                 <div>
                   <h4 className="text-gray-400 text-sm mb-1">Regulation</h4>
-                  <p className="text-white font-semibold">{firm.regulation}</p>
+                  <p className="text-white font-semibold">{firm.regulation_country || 'N/A'}</p>
                 </div>
                 <div>
                   <h4 className="text-gray-400 text-sm mb-1">Max Funding</h4>
-                  <p className="text-white font-semibold">${firm.maxFunding.toLocaleString()}</p>
+                  <p className="text-white font-semibold">
+                    {firm.max_funding ? `$${firm.max_funding.toLocaleString()}` : 'N/A'}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -150,34 +153,48 @@ const FullReview = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-slate-700">
-                    <TableHead className="text-gray-300">Account Size</TableHead>
-                    <TableHead className="text-gray-300">Price</TableHead>
-                    <TableHead className="text-gray-300">Discount</TableHead>
-                    <TableHead className="text-gray-300">Platform</TableHead>
-                    <TableHead className="text-gray-300">Payout Rate</TableHead>
-                    <TableHead className="text-gray-300">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {firm.accountSizes.map((account, index) => (
-                    <TableRow key={index} className="border-slate-700 hover:bg-slate-700/30">
-                      <TableCell className="text-white font-semibold">${account.size}</TableCell>
-                      <TableCell className="text-white">${account.price}</TableCell>
-                      <TableCell className="text-green-400">{account.discount}% OFF</TableCell>
-                      <TableCell className="text-gray-300">{account.platform}</TableCell>
-                      <TableCell className="text-blue-400">{account.payoutRate}%</TableCell>
-                      <TableCell>
-                        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                          Buy Now
-                        </button>
-                      </TableCell>
+              {accountSizesLoading ? (
+                <div className="text-center py-8">
+                  <LoadingSpinner />
+                  <p className="text-gray-400 mt-2">Loading account sizes...</p>
+                </div>
+              ) : accountSizes && accountSizes.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-slate-700">
+                      <TableHead className="text-gray-300">Account Size</TableHead>
+                      <TableHead className="text-gray-300">Price</TableHead>
+                      <TableHead className="text-gray-300">Discount</TableHead>
+                      <TableHead className="text-gray-300">Platform</TableHead>
+                      <TableHead className="text-gray-300">Payout Rate</TableHead>
+                      <TableHead className="text-gray-300">Action</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {accountSizes.map((account, index) => (
+                      <TableRow key={index} className="border-slate-700 hover:bg-slate-700/30">
+                        <TableCell className="text-white font-semibold">{account.account_size}</TableCell>
+                        <TableCell className="text-white">${account.price || 'N/A'}</TableCell>
+                        <TableCell className="text-green-400">{account.discount ? `${account.discount}% OFF` : 'N/A'}</TableCell>
+                        <TableCell className="text-gray-300">{account.platform || 'N/A'}</TableCell>
+                        <TableCell className="text-blue-400">{account.payout_rate ? `${account.payout_rate}%` : 'N/A'}</TableCell>
+                        <TableCell>
+                          <button 
+                            onClick={() => handleBuyNow(firm.buy_now_url || firm.affiliate_link)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                          >
+                            Buy Now
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-400">No account sizes available for this firm.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
