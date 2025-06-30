@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const FullReview = () => {
   const { firmId } = useParams();
-  const { data: firms, isLoading: firmsLoading } = usePropFirms();
+  const { data: firms, isLoading: firmsLoading, error: firmsError } = usePropFirms();
   const { data: accountSizes, isLoading: accountSizesLoading } = useAccountSizes(firmId);
   
   const firm = firms?.find(f => f.id === firmId);
@@ -21,6 +21,18 @@ const FullReview = () => {
         <div className="py-24 px-4 text-center">
           <LoadingSpinner size="lg" />
           <p className="text-gray-300 mt-4">Loading firm details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (firmsError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <Navigation />
+        <div className="py-24 px-4 text-center">
+          <h1 className="text-4xl font-bold text-white mb-4">Error Loading Firm</h1>
+          <p className="text-gray-300">Please try refreshing the page or check your connection.</p>
         </div>
       </div>
     );

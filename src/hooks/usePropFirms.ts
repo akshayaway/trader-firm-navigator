@@ -1,14 +1,39 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export const usePropFirms = () => {
+  const queryClient = useQueryClient();
+
+  // Set up real-time subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel('propfirms-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'propfirms'
+        },
+        () => {
+          // Invalidate and refetch the data when changes occur
+          queryClient.invalidateQueries({ queryKey: ["propfirms"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   return useQuery({
     queryKey: ["propfirms"],
     queryFn: async () => {
       console.log('Fetching prop firms from Supabase...');
       
-      // Use a more direct query to avoid RLS issues
       const { data, error } = await supabase
         .from("propfirms")
         .select(`
