@@ -11,6 +11,7 @@ import Reviews from "./pages/Reviews";
 import Compare from "./pages/Compare";
 import CheapFirms from "./pages/CheapFirms";
 import TopFirms from "./pages/TopFirms";
+import Blog from "./pages/Blog";
 import FullReview from "./pages/FullReview";
 import FirmDetail from "./pages/FirmDetail";
 import Auth from "./pages/Auth";
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/compare" element={<Compare />} />
             <Route path="/cheap-firms" element={<CheapFirms />} />
             <Route path="/top-firms" element={<TopFirms />} />
+            <Route path="/blog" element={<Blog />} />
             <Route path="/firm/:firmId" element={<FirmDetail />} />
             <Route path="/full-review/:firmId" element={<FullReview />} />
             <Route path="/auth" element={<Auth />} />
