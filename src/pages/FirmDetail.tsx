@@ -3,11 +3,18 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
+import { ReviewSubmissionForm } from '@/components/ReviewSubmissionForm';
+import { ReviewsList } from '@/components/ReviewsList';
+import { AccountSizesManager } from '@/components/admin/AccountSizesManager';
 import { usePropFirms } from '@/hooks/usePropFirms';
+import { useAuth } from '@/hooks/useAuth';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const FirmDetail = () => {
   const { firmId } = useParams();
   const { data: firms, isLoading } = usePropFirms();
+  const { isAdmin } = useAuth();
   
   const firm = firms?.find(f => f.id === firmId);
 
@@ -17,7 +24,7 @@ const FirmDetail = () => {
         <Navigation />
         <div className="py-12 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="text-white text-xl">Loading...</div>
+            <LoadingSpinner size="lg" />
           </div>
         </div>
         <Footer />
@@ -39,14 +46,12 @@ const FirmDetail = () => {
     );
   }
 
-  // Dummy account sizes data
-  const accountSizes = [
-    { size: '$10K', discount: '15%', launchDate: '2024-01-15', price: '$89', discountPrice: '$76' },
-    { size: '$25K', discount: '20%', launchDate: '2024-01-15', price: '$149', discountPrice: '$119' },
-    { size: '$50K', discount: '25%', launchDate: '2024-01-15', price: '$249', discountPrice: '$187' },
-    { size: '$100K', discount: '30%', launchDate: '2024-01-15', price: '$449', discountPrice: '$314' },
-    { size: '$200K', discount: '35%', launchDate: '2024-01-15', price: '$799', discountPrice: '$519' },
-  ];
+  const handleBuyNow = () => {
+    const targetUrl = firm.buy_now_url || firm.affiliate_link;
+    if (targetUrl) {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
@@ -85,93 +90,55 @@ const FirmDetail = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Current Offer</h3>
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-4xl font-bold text-green-600">${firm.price}</span>
-                  <span className="text-gray-400 line-through text-xl">${firm.original_price}</span>
-                  <span className="bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full font-semibold">
-                    -{firm.discount}% OFF
-                  </span>
+                  {firm.original_price && firm.original_price > firm.price && (
+                    <>
+                      <span className="text-gray-400 line-through text-xl">${firm.original_price}</span>
+                      <span className="bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full font-semibold">
+                        -{firm.discount}% OFF
+                      </span>
+                    </>
+                  )}
                 </div>
-                <div className="bg-white rounded-lg px-4 py-3 mb-4">
-                  <span className="text-sm text-gray-600">Coupon Code</span>
-                  <div className="font-mono text-gray-900 font-bold text-xl">{firm.coupon_code}</div>
-                </div>
-                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors">
-                  Get Started Now
-                </button>
+                {firm.coupon_code && (
+                  <div className="bg-white rounded-lg px-4 py-3 mb-4">
+                    <span className="text-sm text-gray-600">Coupon Code</span>
+                    <div className="font-mono text-gray-900 font-bold text-xl">{firm.coupon_code}</div>
+                  </div>
+                )}
+                {(firm.buy_now_url || firm.affiliate_link) && (
+                  <button 
+                    onClick={handleBuyNow}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-semibold text-lg transition-colors"
+                  >
+                    Get Started Now
+                  </button>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Account Sizes Table */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Account Sizes & Pricing</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Account Size</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Discount</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Launch Date</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Original Price</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Discounted Price</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {accountSizes.map((account, index) => (
-                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">{account.size}</td>
-                      <td className="px-6 py-4 text-sm text-green-600 font-semibold">{account.discount}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{account.launchDate}</td>
-                      <td className="px-6 py-4 text-sm text-gray-400 line-through">{account.price}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-green-600">{account.discountPrice}</td>
-                      <td className="px-6 py-4">
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                          Select
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* User Reviews Section */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">User Reviews</h2>
+          {/* Tabs for different sections */}
+          <Tabs defaultValue="reviews" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsTrigger value="reviews">Reviews</TabsTrigger>
+              <TabsTrigger value="write-review">Write Review</TabsTrigger>
+              {isAdmin && <TabsTrigger value="admin">Admin</TabsTrigger>}
+            </TabsList>
             
-            {/* Dummy reviews */}
-            <div className="space-y-6">
-              {[
-                { reviewer: 'John D.', rating: 5, review: 'Excellent prop firm with fast payouts and great support team.', date: '2024-01-15' },
-                { reviewer: 'Sarah M.', rating: 4, review: 'Good platform and competitive rates. Highly recommended for beginners.', date: '2024-01-10' },
-                { reviewer: 'Anonymous', rating: 5, review: 'Been trading with them for 6 months. Very satisfied with the service.', date: '2024-01-05' }
-              ].map((review, index) => (
-                <div key={index} className="border-b border-gray-200 pb-6 last:border-b-0">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="font-semibold text-gray-900">{review.reviewer}</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className={`text-lg ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
-                            ⭐
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <span className="text-sm text-gray-500">{review.date}</span>
-                  </div>
-                  <p className="text-gray-700">{review.review}</p>
-                </div>
-              ))}
-            </div>
+            <TabsContent value="reviews">
+              <ReviewsList firmId={firmId} />
+            </TabsContent>
             
-            <div className="mt-8 text-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Write a Review
-              </button>
-            </div>
-          </div>
+            <TabsContent value="write-review">
+              <ReviewSubmissionForm firmId={firmId!} firmName={firm.name} />
+            </TabsContent>
+            
+            {isAdmin && (
+              <TabsContent value="admin">
+                <AccountSizesManager firmId={firmId!} />
+              </TabsContent>
+            )}
+          </Tabs>
         </div>
       </div>
       

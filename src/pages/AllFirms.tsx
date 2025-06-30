@@ -1,15 +1,21 @@
 
 import { Navigation } from "@/components/Navigation";
 import { FirmFilters } from "@/components/FirmFilters";
-import { FirmCard } from "@/components/FirmCard";
+import { EnhancedPropFirmCard } from "@/components/EnhancedPropFirmCard";
+import { SearchAndFilter } from "@/components/SearchAndFilter";
 import { Footer } from "@/components/Footer";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { usePropFirms } from "@/hooks/usePropFirms";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const AllFirms = () => {
   const [activeLevel, setActiveLevel] = useState("All Levels");
-  const [sortBy, setSortBy] = useState("Review Score");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const { data: firms, isLoading } = usePropFirms();
+
+  const handleFilteredData = useCallback((data: any[]) => {
+    setFilteredData(data);
+  }, []);
 
   if (isLoading) {
     return (
@@ -21,18 +27,21 @@ const AllFirms = () => {
               <h1 className="text-5xl font-bold text-white mb-4">All Prop Firms</h1>
               <p className="text-xl text-gray-300">Loading prop trading firms...</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-slate-800/60 rounded-2xl p-6 animate-pulse">
-                  <div className="h-64 bg-slate-700/50 rounded"></div>
-                </div>
-              ))}
-            </div>
+            <LoadingSpinner size="lg" />
           </div>
         </div>
       </div>
     );
   }
+
+  const searchFields = ['name', 'platform', 'regulation_country'];
+  const sortOptions = [
+    { label: 'Review Score', value: 'review_score' },
+    { label: 'Trust Rating', value: 'trust_rating' },
+    { label: 'Price', value: 'price' },
+    { label: 'Profit Split', value: 'profit_split' },
+    { label: 'Max Funding', value: 'max_funding' }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
@@ -51,17 +60,39 @@ const AllFirms = () => {
           <FirmFilters 
             activeLevel={activeLevel}
             setActiveLevel={setActiveLevel}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
+            sortBy="Review Score"
+            setSortBy={() => {}}
           />
 
-          <div className="mb-6">
-            <p className="text-gray-400">Showing {firms?.length || 0} prop firms</p>
-          </div>
+          <SearchAndFilter
+            data={firms || []}
+            onFilteredData={handleFilteredData}
+            searchFields={searchFields}
+            sortOptions={sortOptions}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {firms?.map((firm) => (
-              <FirmCard key={firm.id} firm={firm} />
+            {filteredData.map((firm) => (
+              <EnhancedPropFirmCard
+                key={firm.id}
+                id={firm.id}
+                name={firm.name}
+                brand={firm.brand}
+                price={firm.price || 0}
+                originalPrice={firm.original_price}
+                discount={firm.discount}
+                couponCode={firm.coupon_code}
+                reviewScore={firm.review_score || 0}
+                trustRating={firm.trust_rating || 0}
+                profitSplit={firm.profit_split || 0}
+                payoutRate={firm.payout_rate || 0}
+                platform={firm.platform}
+                features={firm.features}
+                logoUrl={firm.logo_url}
+                affiliateLink={firm.affiliate_link}
+                buyNowUrl={firm.buy_now_url}
+                maxFunding={firm.max_funding}
+              />
             ))}
           </div>
         </div>

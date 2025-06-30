@@ -53,6 +53,39 @@ export type Database = {
           },
         ]
       }
+      blog_posts: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          published: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       cheap_firms: {
         Row: {
           created_at: string
@@ -81,12 +114,18 @@ export type Database = {
       }
       propfirms: {
         Row: {
+          affiliate_link: string | null
+          brand: string | null
+          buy_now_url: string | null
+          category_id: string | null
           cons: string[] | null
           coupon_code: string | null
           created_at: string | null
           description: string | null
           discount: number | null
+          evaluation_model: string | null
           features: string[] | null
+          funding_amount: string | null
           id: string
           logo_url: string | null
           max_funding: number | null
@@ -99,18 +138,26 @@ export type Database = {
           pros: string[] | null
           regulation_country: string | null
           review_score: number | null
+          slug: string | null
+          starting_fee: number | null
           tags: string[] | null
           trading_levels: string[] | null
           trust_rating: number | null
           updated_at: string | null
         }
         Insert: {
+          affiliate_link?: string | null
+          brand?: string | null
+          buy_now_url?: string | null
+          category_id?: string | null
           cons?: string[] | null
           coupon_code?: string | null
           created_at?: string | null
           description?: string | null
           discount?: number | null
+          evaluation_model?: string | null
           features?: string[] | null
+          funding_amount?: string | null
           id?: string
           logo_url?: string | null
           max_funding?: number | null
@@ -123,18 +170,26 @@ export type Database = {
           pros?: string[] | null
           regulation_country?: string | null
           review_score?: number | null
+          slug?: string | null
+          starting_fee?: number | null
           tags?: string[] | null
           trading_levels?: string[] | null
           trust_rating?: number | null
           updated_at?: string | null
         }
         Update: {
+          affiliate_link?: string | null
+          brand?: string | null
+          buy_now_url?: string | null
+          category_id?: string | null
           cons?: string[] | null
           coupon_code?: string | null
           created_at?: string | null
           description?: string | null
           discount?: number | null
+          evaluation_model?: string | null
           features?: string[] | null
+          funding_amount?: string | null
           id?: string
           logo_url?: string | null
           max_funding?: number | null
@@ -147,6 +202,8 @@ export type Database = {
           pros?: string[] | null
           regulation_country?: string | null
           review_score?: number | null
+          slug?: string | null
+          starting_fee?: number | null
           tags?: string[] | null
           trading_levels?: string[] | null
           trust_rating?: number | null
@@ -222,6 +279,74 @@ export type Database = {
             foreignKeyName: "top_firms_firm_id_fkey"
             columns: ["firm_id"]
             isOneToOne: true
+            referencedRelation: "propfirms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          is_admin: boolean | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_admin?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_admin?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          firm_id: string | null
+          id: string
+          rating: number
+          reviewer_name: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          firm_id?: string | null
+          id?: string
+          rating: number
+          reviewer_name?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          firm_id?: string | null
+          id?: string
+          rating?: number
+          reviewer_name?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reviews_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
             referencedRelation: "propfirms"
             referencedColumns: ["id"]
           },
