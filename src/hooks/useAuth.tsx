@@ -26,11 +26,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check admin status when user changes
+        // Check localStorage for admin status (simplified approach)
         if (session?.user) {
-          setTimeout(() => {
-            checkAdminStatus(session.user.id);
-          }, 0);
+          const adminStatus = localStorage.getItem('adminLoggedIn') === 'true';
+          setIsAdmin(adminStatus);
         } else {
           setIsAdmin(false);
         }
@@ -41,27 +40,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      // Check localStorage for admin status
       if (session?.user) {
-        checkAdminStatus(session.user.id);
+        const adminStatus = localStorage.getItem('adminLoggedIn') === 'true';
+        setIsAdmin(adminStatus);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkAdminStatus = async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from("admin_users")
-        .select("role")
-        .eq("user_id", userId)
-        .single();
-      
-      setIsAdmin(data?.role === "admin");
-    } catch (error) {
-      setIsAdmin(false);
-    }
-  };
 
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -85,6 +73,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Clear admin status on logout
+    localStorage.removeItem('adminLoggedIn');
+    setIsAdmin(false);
     await supabase.auth.signOut();
   };
 
