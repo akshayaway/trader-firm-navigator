@@ -32,6 +32,14 @@ export const usePropFirms = () => {
           trading_levels,
           tags,
           logo_url,
+          affiliate_link,
+          buy_now_url,
+          slug,
+          brand,
+          category_id,
+          evaluation_model,
+          starting_fee,
+          funding_amount,
           created_at,
           updated_at
         `)
