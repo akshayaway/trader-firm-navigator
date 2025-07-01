@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { ReviewSubmissionForm } from '@/components/ReviewSubmissionForm';
-import { ReviewsList } from '@/components/ReviewsList';
+import { ReviewForm } from '@/components/reviews/ReviewForm';
+import { ReviewList } from '@/components/reviews/ReviewList';
 import { AccountSizesManager } from '@/components/admin/AccountSizesManager';
 import { usePropFirms } from '@/hooks/usePropFirms';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,8 +15,13 @@ const FirmDetail = () => {
   const { firmId } = useParams();
   const { data: firms, isLoading } = usePropFirms();
   const { isAdmin } = useAuth();
+  const [refreshKey, setRefreshKey] = useState(0);
   
   const firm = firms?.find(f => f.id === firmId);
+
+  const handleReviewAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   if (isLoading) {
     return (
@@ -90,7 +95,7 @@ const FirmDetail = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Current Offer</h3>
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-4xl font-bold text-green-600">${firm.price}</span>
-                  {firm.original_price && firm.original_price > firm.price && (
+                  {firm.original_price && firm.original_price > (firm.price || 0) && (
                     <>
                       <span className="text-gray-400 line-through text-xl">${firm.original_price}</span>
                       <span className="bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full font-semibold">
@@ -126,11 +131,15 @@ const FirmDetail = () => {
             </TabsList>
             
             <TabsContent value="reviews">
-              <ReviewsList firmId={firmId} />
+              <ReviewList key={refreshKey} firmId={firmId!} />
             </TabsContent>
             
             <TabsContent value="write-review">
-              <ReviewSubmissionForm firmId={firmId!} firmName={firm.name} />
+              <ReviewForm 
+                firmId={firmId!} 
+                firmName={firm.name}
+                onReviewAdded={handleReviewAdded}
+              />
             </TabsContent>
             
             {isAdmin && (

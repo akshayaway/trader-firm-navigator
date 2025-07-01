@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { TradingLevelSelector } from "@/components/TradingLevelSelector";
@@ -10,7 +10,7 @@ import { AdminPanel } from "@/components/AdminPanel";
 const Index = () => {
   const [isAdminMode, setIsAdminMode] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
     setIsAdminMode(isAdmin);
   }, []);
