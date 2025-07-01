@@ -10,7 +10,9 @@ const AllFirms = () => {
   const [sortBy, setSortBy] = useState<'price' | 'review' | 'trust'>('review');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'beginner' | 'intermediate' | 'pro'>('all');
   const [isAdminMode, setIsAdminMode] = useState(false);
-  const { propFirms, loading, error } = usePropFirms();
+  const { data, isLoading: loading, error } = usePropFirms();
+  
+  const propFirms = data?.propFirms || [];
 
   // Filter by category
   const filteredFirms = selectedCategory === 'all'
