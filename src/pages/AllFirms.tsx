@@ -2,19 +2,20 @@
 import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { EnhancedPropFirmCard } from "@/components/EnhancedPropFirmCard";
-import { usePropFirms } from "@/hooks/usePropFirms";
+import { PropFirmCard } from "@/components/PropFirmCard";
+import { usePropFirms } from "@/hooks/useSupabaseData";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 const AllFirms = () => {
   const [sortBy, setSortBy] = useState<'price' | 'review' | 'trust'>('review');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'beginner' | 'intermediate' | 'pro'>('all');
-  const { data: propFirms, isLoading: loading, error } = usePropFirms();
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const { propFirms, loading, error } = usePropFirms();
 
   // Filter by category
   const filteredFirms = selectedCategory === 'all'
-    ? propFirms || []
-    : (propFirms || []).filter(firm => {
+    ? propFirms
+    : propFirms.filter(firm => {
         if (selectedCategory === 'beginner') return (firm.price || 0) < 200;
         if (selectedCategory === 'intermediate') return (firm.price || 0) >= 200 && (firm.price || 0) <= 500;
         if (selectedCategory === 'pro') return (firm.price || 0) > 500;
@@ -88,25 +89,21 @@ const AllFirms = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {sortedFirms.map((firm, index) => (
-            <EnhancedPropFirmCard
-              key={firm.id}
+            <PropFirmCard 
+              key={firm.id} 
               id={firm.id}
               name={firm.name}
-              brand={firm.brand}
               price={firm.price || 0}
-              originalPrice={firm.original_price}
-              discount={firm.discount}
-              couponCode={firm.coupon_code}
+              originalPrice={firm.original_price || 0}
+              discount={firm.discount || 0}
+              couponCode={firm.coupon_code || ''}
               reviewScore={firm.review_score || 0}
               trustRating={firm.trust_rating || 0}
               profitSplit={firm.profit_split || 0}
               payoutRate={firm.payout_rate || 0}
-              platform={firm.platform}
-              features={firm.features}
-              logoUrl={firm.logo_url}
-              affiliateLink={firm.affiliate_link}
-              buyNowUrl={firm.buy_now_url}
-              maxFunding={firm.max_funding}
+              platform={firm.platform || ''}
+              keyFeatures={firm.features || []}
+              tag={firm.tags?.[0]}
             />
           ))}
         </div>
