@@ -50,11 +50,7 @@ export const usePropFirms = () => {
       }
       
       console.log('Fetched prop firms:', data);
-      return {
-        propFirms: data || [],
-        loading: false,
-        error: null
-      };
+      return data || [];
     },
     retry: 3,
     retryDelay: 1000,

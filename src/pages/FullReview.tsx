@@ -1,9 +1,8 @@
-
 import { Navigation } from "@/components/Navigation";
 import { useParams } from "react-router-dom";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { usePropFirms } from "@/hooks/usePropFirms";
+import { usePropFirms } from "@/hooks/useSupabaseData";
 import { useAccountSizes } from "@/hooks/useAccountSizes";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 

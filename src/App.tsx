@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { AdminRoute } from "./components/AdminRoute";
 import Index from "./pages/Index";
 import AllFirms from "./pages/AllFirms";
 import Reviews from "./pages/Reviews";
@@ -19,7 +20,15 @@ import Admin from "./pages/Admin";
 import AdminAccess from "./pages/AdminAccess";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,11 +45,16 @@ const App = () => (
             <Route path="/cheap-firms" element={<CheapFirms />} />
             <Route path="/top-firms" element={<TopFirms />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/firm/:firmId" element={<FullReview />} />
+            <Route path="/firm/:firmId" element={<FirmDetail />} />
+            <Route path="/review/:firmId" element={<FullReview />} />
             <Route path="/full-review/:firmId" element={<FullReview />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
             <Route path="/admin-access" element={<AdminAccess />} />
+            <Route path="/admin" element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

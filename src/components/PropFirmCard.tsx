@@ -1,4 +1,5 @@
 
+import React, { memo } from "react";
 import { Link } from "react-router-dom";
 
 interface PropFirmCardProps {
@@ -18,7 +19,7 @@ interface PropFirmCardProps {
   isDarkMode?: boolean;
 }
 
-export const PropFirmCard = ({ 
+export const PropFirmCard = memo(({ 
   id, name, price, originalPrice, discount, couponCode, 
   reviewScore, trustRating, profitSplit, payoutRate, 
   platform, keyFeatures, tag, isDarkMode = true 
@@ -30,6 +31,11 @@ export const PropFirmCard = ({
   const textPrimary = isDarkMode ? 'text-white' : 'text-gray-900';
   const textSecondary = isDarkMode ? 'text-gray-300' : 'text-gray-600';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
+
+  const handleBuyNow = () => {
+    // Will be implemented with actual buy URLs from database
+    console.log(`Buy now clicked for ${name}`);
+  };
 
   return (
     <div className={`${cardBg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border group`}>
@@ -49,23 +55,26 @@ export const PropFirmCard = ({
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-3xl font-bold ${textPrimary} group-hover:text-green-400 transition-colors`}>${price}</span>
-          <span className={`${textMuted} line-through`}>${originalPrice}</span>
-          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-            isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
-          }`}>
-            -{discount}%
-          </span>
+          {originalPrice > price && (
+            <>
+              <span className={`${textMuted} line-through`}>${originalPrice}</span>
+              <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800'
+              }`}>
+                -{discount}%
+              </span>
+            </>
+          )}
         </div>
       </div>
 
       {/* Coupon Code */}
-      <div className={`${isDarkMode ? 'bg-slate-700/60' : 'bg-gray-100'} rounded-lg px-3 py-2 mb-4 transition-colors`}>
-        <span className={`text-xs ${textSecondary}`}>Coupon Code</span>
-        <div className={`font-mono ${textPrimary} font-bold text-lg`}>{couponCode}</div>
-      </div>
-
-      {/* Description */}
-      <p className={`${textSecondary} text-sm mb-4`}>Low-cost entry point with competitive features</p>
+      {couponCode && (
+        <div className={`${isDarkMode ? 'bg-slate-700/60' : 'bg-gray-100'} rounded-lg px-3 py-2 mb-4 transition-colors`}>
+          <span className={`text-xs ${textSecondary}`}>Coupon Code</span>
+          <div className={`font-mono ${textPrimary} font-bold text-lg`}>{couponCode}</div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="space-y-2 mb-4">
@@ -98,7 +107,7 @@ export const PropFirmCard = ({
       <div className="mb-6">
         <h4 className={`${textPrimary} font-semibold mb-2`}>Key Features:</h4>
         <ul className={`${textSecondary} text-sm space-y-1`}>
-          {keyFeatures.map((feature, index) => (
+          {keyFeatures.slice(0, 3).map((feature, index) => (
             <li key={index}>• {feature}</li>
           ))}
         </ul>
@@ -106,13 +115,16 @@ export const PropFirmCard = ({
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        <button className={`flex-1 ${
-          isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'
-        } text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl`}>
+        <button 
+          onClick={handleBuyNow}
+          className={`flex-1 ${
+            isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'
+          } text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl`}
+        >
           Buy Now
         </button>
         <Link
-          to={`/firm/${id}`}
+          to={`/review/${id}`}
           className={`flex-1 ${
             isDarkMode 
               ? 'bg-slate-600/60 hover:bg-slate-500/60 text-white' 
@@ -124,4 +136,6 @@ export const PropFirmCard = ({
       </div>
     </div>
   );
-};
+});
+
+PropFirmCard.displayName = 'PropFirmCard';
