@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -14,24 +14,33 @@ const AdminAccess = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if already logged in as admin
+    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
+    if (isAdmin) {
+      navigate('/admin');
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    // Simple password check
-    if (password === 'admin123') {
+    // Admin password check - you have permanent access
+    if (password === 'admin123' || password === 'masteradmin2024') {
       localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminPermanent', 'true'); // Permanent access flag
       navigate('/admin');
     } else {
-      setError('Invalid password. Please try again.');
+      setError('Invalid password. Use admin123 or masteradmin2024 for access.');
     }
     
     setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       <Navigation />
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
         <div className="glass-card p-8 w-full max-w-md">
@@ -39,7 +48,7 @@ const AdminAccess = () => {
             <div className="p-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl glow-purple inline-block mb-4">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold gradient-text mb-2">Admin Access</h1>
+            <h1 className="text-3xl font-bold gradient-text mb-2">Secure Admin Access</h1>
             <p className="text-white/70">Enter your admin credentials to continue</p>
           </div>
 
@@ -100,8 +109,9 @@ const AdminAccess = () => {
 
           <div className="mt-6 text-center">
             <p className="text-white/50 text-sm">
-              Demo Password: <code className="bg-white/10 px-2 py-1 rounded text-white/80">admin123</code>
+              Admin Passwords: <code className="bg-white/10 px-2 py-1 rounded text-white/80">admin123</code> or <code className="bg-white/10 px-2 py-1 rounded text-white/80">masteradmin2024</code>
             </p>
+            <p className="text-green-400 text-xs mt-2">✓ Permanent access enabled for owner</p>
           </div>
         </div>
       </div>

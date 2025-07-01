@@ -1,44 +1,66 @@
 
-import React, { useState } from 'react';
-import { Navigation } from "@/components/Navigation";
-import { Hero } from "@/components/Hero";
-import { TradingLevelSelector } from "@/components/TradingLevelSelector";
-import { PropFirmShowcase } from "@/components/PropFirmShowcase";
-import { Footer } from "@/components/Footer";
-import { AdminPanel } from "@/components/AdminPanel";
+import { useState, useEffect } from "react";
+import { Navbar } from "../components/Navbar";
+import { Hero } from "../components/Hero";
+import { PropFirmSection } from "../components/PropFirmSection";
+import { Footer } from "../components/Footer";
+import { usePropFirms } from "../hooks/useSupabaseData";
+
+interface PropFirm {
+  id: string;
+  name: string;
+  description?: string;
+  price?: number;
+  original_price?: number;
+  discount?: number;
+  coupon_code?: string;
+  review_score?: number;
+  trust_rating?: number;
+  profit_split?: number;
+  payout_rate?: number;
+  max_funding?: number;
+  platform?: string;
+  features?: string[];
+  pros?: string[];
+  cons?: string[];
+  regulation_country?: string;
+  trading_levels?: string[];
+  tags?: string[];
+  logo_url?: string;
+  affiliate_link?: string;
+  buy_now_url?: string;
+  slug?: string;
+  brand?: string;
+  category_id?: string;
+  evaluation_model?: string;
+  starting_fee?: number;
+  funding_amount?: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
 const Index = () => {
+  const { data, isLoading: loading } = usePropFirms();
+  const propFirms = data?.propFirms || [];
+  const [sortBy, setSortBy] = useState<'price' | 'review' | 'trust' | 'profit'>('review');
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [searchResults, setSearchResults] = useState<PropFirm[] | undefined>(undefined);
 
-  React.useEffect(() => {
-    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
-    setIsAdminMode(isAdmin);
-  }, []);
+  // Optionally, implement search/filter logic here
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      <Navigation />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      <Navbar />
       <Hero />
-      <TradingLevelSelector />
-      <PropFirmShowcase />
-      
-      {isAdminMode && (
-        <div className="py-12 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="glass-card p-8 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Quick Admin Access</h2>
-              <p className="text-white/70 mb-4">You're logged in as admin. Access the full dashboard for advanced management.</p>
-              <a 
-                href="/admin" 
-                className="btn-premium inline-flex items-center"
-              >
-                Go to Admin Dashboard
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-      
+      <div className="container mx-auto px-4 py-8">
+        <PropFirmSection
+          propFirms={searchResults || propFirms}
+          loading={loading}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+      </div>
       <Footer />
     </div>
   );

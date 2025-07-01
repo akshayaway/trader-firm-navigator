@@ -2,16 +2,9 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 
 export const Navigation = () => {
-  const { user, isAdmin, signOut } = useAuth();
-  const [isLocalAdmin, setIsLocalAdmin] = useState(false);
-
-  useEffect(() => {
-    const adminStatus = localStorage.getItem('adminLoggedIn');
-    setIsLocalAdmin(adminStatus === 'true');
-  }, []);
+  const { user, signOut } = useAuth();
 
   return (
     <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
@@ -36,14 +29,6 @@ export const Navigation = () => {
             <Link to="/compare" className="text-gray-300 hover:text-white transition-colors">
               Compare
             </Link>
-            <Link to="/admin-access" className="text-yellow-400 hover:text-yellow-300 transition-colors">
-              Admin
-            </Link>
-            {(isAdmin || isLocalAdmin) && (
-              <Link to="/admin" className="text-blue-400 hover:text-blue-300 transition-colors font-semibold">
-                Admin Dashboard
-              </Link>
-            )}
             {user ? (
               <Button onClick={() => signOut()} variant="outline" size="sm" className="border-slate-600 text-white hover:bg-slate-700">
                 Sign Out
