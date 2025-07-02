@@ -58,7 +58,9 @@ export const AdminFormPanel: React.FC<AdminFormPanelProps> = ({ onOperationCompl
       max_funding: formData.max_funding || undefined,
       features: formData.features,
       pros: formData.pros,
-      cons: formData.cons
+      cons: formData.cons,
+      affiliate_link: formData.affiliate_link || undefined,
+      buy_now_url: formData.buy_now_url || undefined
     });
 
     if (result.success) {

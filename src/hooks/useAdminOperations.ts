@@ -24,6 +24,8 @@ export interface PropFirmData {
   max_funding?: string;
   starting_fee?: number;
   funding_amount?: string;
+  affiliate_link?: string;
+  buy_now_url?: string;
 }
 
 export const useAdminOperations = () => {
@@ -51,7 +53,9 @@ export const useAdminOperations = () => {
         tags: [],
         logo_url: null,
         regulation_country: firmData.regulation || null,
-        trading_levels: []
+        trading_levels: [],
+        affiliate_link: firmData.affiliate_link || null,
+        buy_now_url: firmData.buy_now_url || null
       };
 
       const { data, error } = await supabase

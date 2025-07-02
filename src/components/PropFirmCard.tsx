@@ -17,12 +17,15 @@ interface PropFirmCardProps {
   keyFeatures: string[];
   tag?: string;
   isDarkMode?: boolean;
+  affiliateLink?: string;
+  buyNowUrl?: string;
 }
 
 export const PropFirmCard = memo(({ 
   id, name, price, originalPrice, discount, couponCode, 
   reviewScore, trustRating, profitSplit, payoutRate, 
-  platform, keyFeatures, tag, isDarkMode = true 
+  platform, keyFeatures, tag, isDarkMode = true,
+  affiliateLink, buyNowUrl
 }: PropFirmCardProps) => {
   const cardBg = isDarkMode 
     ? 'bg-slate-800/80 backdrop-blur-sm border-slate-700/50' 
@@ -33,8 +36,12 @@ export const PropFirmCard = memo(({
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
 
   const handleBuyNow = () => {
-    // Will be implemented with actual buy URLs from database
-    console.log(`Buy now clicked for ${name}`);
+    const url = affiliateLink || buyNowUrl;
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      console.log(`No affiliate/buy URL available for ${name}`);
+    }
   };
 
   return (

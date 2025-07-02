@@ -10,6 +10,30 @@ const CheapFirms = () => {
   const [sortBy, setSortBy] = useState("Review Score");
   const { data: firms, isLoading } = useCheapFirms();
 
+  // Filter by level
+  const filteredFirms = firms?.filter(firm => {
+    if (activeLevel === "All Levels") return true;
+    if (activeLevel === "Beginner Traders") return (firm.price || 0) < 50;
+    if (activeLevel === "Intermediate Traders") return (firm.price || 0) >= 50 && (firm.price || 0) < 100;
+    if (activeLevel === "Pro Traders") return (firm.price || 0) >= 100;
+    return true;
+  }) || [];
+
+  // Sort firms
+  const sortedFirms = [...filteredFirms].sort((a, b) => {
+    switch (sortBy) {
+      case "Price":
+        return (a.price || 0) - (b.price || 0);
+      case "Trust Rating":
+        return (b.trust_rating || 0) - (a.trust_rating || 0);
+      case "Profit Split":
+        return (b.profit_split || 0) - (a.profit_split || 0);
+      case "Review Score":
+      default:
+        return (b.review_score || 0) - (a.review_score || 0);
+    }
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
@@ -51,11 +75,11 @@ const CheapFirms = () => {
           />
 
           <div className="mb-6">
-            <p className="text-gray-400">Showing {firms?.length || 0} cheap prop firms</p>
+            <p className="text-gray-400">Showing {sortedFirms.length} cheap prop firms</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {firms?.map((firm) => (
+            {sortedFirms.map((firm) => (
               <FirmCard key={firm.id} firm={firm} />
             ))}
           </div>

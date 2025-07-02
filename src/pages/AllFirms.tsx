@@ -104,6 +104,8 @@ const AllFirms = () => {
               platform={firm.platform || ''}
               keyFeatures={firm.features || []}
               tag={firm.tags?.[0]}
+              affiliateLink={firm.affiliate_link || ''}
+              buyNowUrl={firm.buy_now_url || ''}
             />
           ))}
         </div>
