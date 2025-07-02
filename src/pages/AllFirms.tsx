@@ -10,14 +10,12 @@ const AllFirms = () => {
   const [sortBy, setSortBy] = useState<'price' | 'review' | 'trust'>('review');
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'beginner' | 'intermediate' | 'pro'>('all');
   const [isAdminMode, setIsAdminMode] = useState(false);
-  const { data, isLoading: loading, error } = usePropFirms();
-  
-  const propFirms = data?.propFirms || [];
+  const { data: propFirms, isLoading: loading, error } = usePropFirms();
 
   // Filter by category
   const filteredFirms = selectedCategory === 'all'
-    ? propFirms
-    : propFirms.filter(firm => {
+    ? propFirms || []
+    : (propFirms || []).filter(firm => {
         if (selectedCategory === 'beginner') return (firm.price || 0) < 200;
         if (selectedCategory === 'intermediate') return (firm.price || 0) >= 200 && (firm.price || 0) <= 500;
         if (selectedCategory === 'pro') return (firm.price || 0) > 500;
