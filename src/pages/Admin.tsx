@@ -8,7 +8,8 @@ import { AdminFirms } from "@/components/admin/AdminFirms";
 import { AdminReviews } from "@/components/admin/AdminReviews";
 import { AdminCheapFirms } from "@/components/admin/AdminCheapFirms";
 import { AdminTopFirms } from "@/components/admin/AdminTopFirms";
-import { Shield, LogOut, Database, Users, Star, TrendingUp } from "lucide-react";
+import { AdminAccountSizes } from "@/components/admin/AdminAccountSizes";
+import { Shield, LogOut, Database, Users, Star, TrendingUp, Calculator } from "lucide-react";
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -105,7 +106,7 @@ const Admin = () => {
 
           {/* Admin Tabs */}
           <Tabs defaultValue="firms" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 glass-header mb-8 p-2">
+            <TabsList className="grid w-full grid-cols-5 glass-header mb-8 p-2">
               <TabsTrigger 
                 value="firms" 
                 className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
@@ -134,6 +135,13 @@ const Admin = () => {
                 <Users className="w-4 h-4 mr-2" />
                 Top Firms
               </TabsTrigger>
+              <TabsTrigger 
+                value="accounts" 
+                className="text-white/80 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg py-3 px-6 font-semibold transition-all duration-300"
+              >
+                <Calculator className="w-4 h-4 mr-2" />
+                Account Sizes
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="firms" className="mt-0">
@@ -150,6 +158,10 @@ const Admin = () => {
 
             <TabsContent value="top" className="mt-0">
               <AdminTopFirms />
+            </TabsContent>
+
+            <TabsContent value="accounts" className="mt-0">
+              <AdminAccountSizes />
             </TabsContent>
           </Tabs>
         </div>
