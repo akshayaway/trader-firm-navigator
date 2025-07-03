@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { ReviewForm } from '@/components/reviews/ReviewForm';
 import { ReviewList } from '@/components/reviews/ReviewList';
 import { AccountSizesManager } from '@/components/admin/AccountSizesManager';
+import { AccountSizesTable } from '@/components/AccountSizesTable';
 import { usePropFirms } from '@/hooks/usePropFirms';
 import { useAuth } from '@/hooks/useAuth';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -121,6 +122,9 @@ const FirmDetail = () => {
               </div>
             </div>
           </div>
+
+          {/* Account Sizes Table */}
+          <AccountSizesTable firmId={firmId!} />
 
           {/* Tabs for different sections */}
           <Tabs defaultValue="reviews" className="w-full">

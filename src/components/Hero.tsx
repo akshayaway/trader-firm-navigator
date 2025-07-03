@@ -17,28 +17,28 @@ export const Hero = () => {
         </p>
         
         {/* Button Row */}
-        <div className="flex flex-wrap justify-center gap-6 mb-16">
+        <div className="flex flex-wrap justify-center gap-4 mb-16">
           <a
             href="/all-firms"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 hover:scale-105"
           >
             Explore All Firms
           </a>
           <a
             href="/compare"
-            className="bg-slate-700/60 hover:bg-slate-600/60 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 border border-slate-600/50"
+            className="bg-white hover:bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"
           >
             Compare Firms
           </a>
           <a
             href="/cheap-firms"
-            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:scale-105 flex items-center gap-2"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:scale-105 flex items-center gap-2"
           >
             💰 Cheap Cost PropFirms
           </a>
           <a
             href="/top-firms"
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/25 hover:scale-105 flex items-center gap-2"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/25 hover:scale-105 flex items-center gap-2"
           >
             🔥 Top 5 PropFirms
           </a>

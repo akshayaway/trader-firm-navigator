@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash2, Plus, Loader2, Star, DollarSign, TrendingUp } from "lucide-react";
+import { AffiliateFormField } from "./AffiliateFormField";
 
 export const AdminFirms = () => {
   const { data: firms, isLoading, error } = usePropFirms();
@@ -31,6 +32,7 @@ export const AdminFirms = () => {
     max_funding: "",
     original_price: "",
     discount: "",
+    affiliate_link: "",
   });
 
   const resetForm = useCallback(() => {
@@ -46,6 +48,7 @@ export const AdminFirms = () => {
       max_funding: "",
       original_price: "",
       discount: "",
+      affiliate_link: "",
     });
     setIsEditing(null);
     setIsAdding(false);
@@ -77,6 +80,7 @@ export const AdminFirms = () => {
       payout_rate: formData.payout_rate ? parseFloat(formData.payout_rate) : 0,
       profit_split: formData.profit_split ? parseFloat(formData.profit_split) : 0,
       max_funding: formData.max_funding || undefined,
+      affiliate_link: formData.affiliate_link.trim() || undefined,
     };
 
     try {
@@ -127,6 +131,7 @@ export const AdminFirms = () => {
       payout_rate: firm.payout_rate?.toString() || "",
       profit_split: firm.profit_split?.toString() || "",
       max_funding: firm.max_funding?.toString() || "",
+      affiliate_link: firm.affiliate_link || "",
     });
     setIsEditing(firm.id);
     setIsAdding(false);
@@ -344,6 +349,13 @@ export const AdminFirms = () => {
                 className="glass-input"
                 placeholder="Enter firm description"
                 rows={4}
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <AffiliateFormField
+                value={formData.affiliate_link}
+                onChange={(value) => setFormData({ ...formData, affiliate_link: value })}
               />
             </div>
 

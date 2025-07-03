@@ -16,6 +16,8 @@ interface FirmCardProps {
     platform: string;
     description: string;
     tags: string[];
+    affiliate_link?: string;
+    buy_now_url?: string;
   };
   isDarkMode?: boolean;
 }
@@ -28,6 +30,13 @@ export const FirmCard = ({ firm, isDarkMode = false }: FirmCardProps) => {
   const textPrimary = isDarkMode ? 'text-white' : 'text-gray-900';
   const textSecondary = isDarkMode ? 'text-gray-300' : 'text-gray-600';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
+
+  const handleBuyNow = () => {
+    const targetUrl = firm.affiliate_link || firm.buy_now_url;
+    if (targetUrl) {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <div className={`${cardBg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border group`}>
@@ -91,12 +100,13 @@ export const FirmCard = ({ firm, isDarkMode = false }: FirmCardProps) => {
       </div>
 
       <div className="flex gap-2">
-        <a
-          href="#"
-          className={`flex-1 ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'} text-white py-3 rounded-xl font-semibold transition-all duration-300 text-center transform hover:scale-105 shadow-lg hover:shadow-xl`}
+        <button
+          onClick={handleBuyNow}
+          className={`flex-1 ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'} text-white py-3 rounded-xl font-semibold transition-all duration-300 text-center transform hover:scale-105 shadow-lg hover:shadow-xl ${!(firm.affiliate_link || firm.buy_now_url) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={!(firm.affiliate_link || firm.buy_now_url)}
         >
           Buy Now
-        </a>
+        </button>
         <Link
           to={`/firm/${firm.id}`}
           className={`flex-1 ${
