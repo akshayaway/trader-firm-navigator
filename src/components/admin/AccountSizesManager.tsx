@@ -104,6 +104,9 @@ export const AccountSizesManager: React.FC<AccountSizesManagerProps> = ({ firmId
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted with firmId:', firmId);
+    console.log('Form data:', formData);
+    
     const data = {
       account_size: formData.account_size,
       price: parseFloat(formData.price) || 0,
@@ -112,9 +115,13 @@ export const AccountSizesManager: React.FC<AccountSizesManagerProps> = ({ firmId
       platform: formData.platform
     };
 
+    console.log('Processed data to insert:', data);
+
     if (editingId) {
+      console.log('Updating account size with ID:', editingId);
       updateMutation.mutate({ id: editingId, data });
     } else {
+      console.log('Adding new account size');
       addMutation.mutate(data);
     }
   };
