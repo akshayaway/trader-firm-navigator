@@ -87,6 +87,7 @@ export const useAdminOperations = () => {
       const updateData = {
         ...firmData,
         max_funding: firmData.max_funding ? parseFloat(firmData.max_funding.replace(/[$,]/g, '')) || null : null,
+        buy_now_url: firmData.buy_now_url || null,
         updated_at: new Date().toISOString()
       };
 

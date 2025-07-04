@@ -46,13 +46,16 @@ export const AccountSizesManager: React.FC<AccountSizesManagerProps> = ({ firmId
   const addMutation = useMutation({
     mutationFn: async (data: any) => {
       console.log('Adding account size:', data);
-      const { error } = await supabase
+      const { data: result, error } = await supabase
         .from('account_sizes')
-        .insert({ ...data, firm_id: firmId });
+        .insert({ ...data, firm_id: firmId })
+        .select();
       if (error) {
         console.error('Error adding account size:', error);
         throw error;
       }
+      console.log('Account size added successfully:', result);
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['account_sizes', firmId] });

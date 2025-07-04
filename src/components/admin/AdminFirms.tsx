@@ -33,6 +33,7 @@ export const AdminFirms = () => {
     original_price: "",
     discount: "",
     affiliate_link: "",
+    buy_now_url: "",
   });
 
   const resetForm = useCallback(() => {
@@ -49,6 +50,7 @@ export const AdminFirms = () => {
       original_price: "",
       discount: "",
       affiliate_link: "",
+      buy_now_url: "",
     });
     setIsEditing(null);
     setIsAdding(false);
@@ -81,6 +83,7 @@ export const AdminFirms = () => {
       profit_split: formData.profit_split ? parseFloat(formData.profit_split) : 0,
       max_funding: formData.max_funding || undefined,
       affiliate_link: formData.affiliate_link.trim() || undefined,
+      buy_now_url: formData.buy_now_url.trim() || undefined,
     };
 
     try {
@@ -132,6 +135,7 @@ export const AdminFirms = () => {
       profit_split: firm.profit_split?.toString() || "",
       max_funding: firm.max_funding?.toString() || "",
       affiliate_link: firm.affiliate_link || "",
+      buy_now_url: firm.buy_now_url || "",
     });
     setIsEditing(firm.id);
     setIsAdding(false);
@@ -352,11 +356,26 @@ export const AdminFirms = () => {
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="space-y-2">
               <AffiliateFormField
                 value={formData.affiliate_link}
                 onChange={(value) => setFormData({ ...formData, affiliate_link: value })}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="buy_now_url" className="text-white">Buy Now URL</Label>
+              <Input
+                id="buy_now_url"
+                type="url"
+                placeholder="https://example.com/buy/..."
+                value={formData.buy_now_url}
+                onChange={(e) => setFormData({ ...formData, buy_now_url: e.target.value })}
+                className="glass-input"
+              />
+              <p className="text-sm text-gray-400">
+                Direct purchase link for this prop firm (optional)
+              </p>
             </div>
 
             <div className="md:col-span-2 flex gap-4">

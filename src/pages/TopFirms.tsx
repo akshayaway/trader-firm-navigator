@@ -1,7 +1,7 @@
 
 import { Navigation } from "@/components/Navigation";
 import { FirmFilters } from "@/components/FirmFilters";
-import { FirmCard } from "@/components/FirmCard";
+import { LazyFirmCard, LazyLoadWrapper } from "@/components/LazyLoadWrapper";
 import { useState } from "react";
 import { useTopFirms } from "@/hooks/useTopFirms";
 
@@ -80,7 +80,9 @@ const TopFirms = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedFirms.map((firm) => (
-              <FirmCard key={firm.id} firm={firm} isDarkMode={true} />
+              <LazyLoadWrapper key={firm.id}>
+                <LazyFirmCard firm={firm} isDarkMode={true} />
+              </LazyLoadWrapper>
             ))}
           </div>
         </div>

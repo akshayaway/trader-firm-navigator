@@ -32,9 +32,11 @@ export const FirmCard = ({ firm, isDarkMode = false }: FirmCardProps) => {
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
 
   const handleBuyNow = () => {
-    const targetUrl = firm.affiliate_link || firm.buy_now_url;
+    const targetUrl = firm.buy_now_url || firm.affiliate_link;
     if (targetUrl) {
       window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      console.log(`No buy/affiliate URL available for ${firm.name}`);
     }
   };
 
@@ -102,8 +104,8 @@ export const FirmCard = ({ firm, isDarkMode = false }: FirmCardProps) => {
       <div className="flex gap-2">
         <button
           onClick={handleBuyNow}
-          className={`flex-1 ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'} text-white py-3 rounded-xl font-semibold transition-all duration-300 text-center transform hover:scale-105 shadow-lg hover:shadow-xl ${!(firm.affiliate_link || firm.buy_now_url) ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={!(firm.affiliate_link || firm.buy_now_url)}
+          className={`flex-1 ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'} text-white py-3 rounded-xl font-semibold transition-all duration-300 text-center transform hover:scale-105 shadow-lg hover:shadow-xl ${!(firm.buy_now_url || firm.affiliate_link) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={!(firm.buy_now_url || firm.affiliate_link)}
         >
           Buy Now
         </button>
