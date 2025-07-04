@@ -18,7 +18,8 @@ const Admin = () => {
   useEffect(() => {
     const checkAdminStatus = () => {
       const adminStatus = localStorage.getItem('adminLoggedIn');
-      setIsLoggedIn(adminStatus === 'true');
+      const adminPermanent = localStorage.getItem('adminPermanent');
+      setIsLoggedIn(adminStatus === 'true' || adminPermanent === 'true');
       setIsLoading(false);
     };
     

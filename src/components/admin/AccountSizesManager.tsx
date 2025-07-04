@@ -34,21 +34,32 @@ export const AccountSizesManager: React.FC<AccountSizesManagerProps> = ({ firmId
         .eq('firm_id', firmId)
         .order('price', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching account sizes:', error);
+        throw error;
+      }
       return data;
     },
+    enabled: !!firmId,
   });
 
   const addMutation = useMutation({
     mutationFn: async (data: any) => {
+      console.log('Adding account size:', data);
       const { error } = await supabase
         .from('account_sizes')
         .insert({ ...data, firm_id: firmId });
-      if (error) throw error;
+      if (error) {
+        console.error('Error adding account size:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['account_sizes', firmId] });
       resetForm();
+    },
+    onError: (error) => {
+      console.error('Add mutation error:', error);
     },
   });
 
