@@ -20,16 +20,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const checkAdminStatus = async (userId: string) => {
+      try {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('is_admin')
+          .eq('user_id', userId)
+          .single();
+        
+        setIsAdmin(profile?.is_admin ?? false);
+      } catch (error) {
+        setIsAdmin(false);
+      }
+    };
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check localStorage for admin status (simplified approach)
         if (session?.user) {
-          const adminStatus = localStorage.getItem('adminLoggedIn') === 'true';
-          setIsAdmin(adminStatus);
+          // Check database for admin status
+          checkAdminStatus(session.user.id);
         } else {
           setIsAdmin(false);
         }
@@ -41,10 +54,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Check localStorage for admin status
       if (session?.user) {
-        const adminStatus = localStorage.getItem('adminLoggedIn') === 'true';
-        setIsAdmin(adminStatus);
+        // Check database for admin status
+        checkAdminStatus(session.user.id);
       }
     });
 

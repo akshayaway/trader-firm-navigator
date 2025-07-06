@@ -1,34 +1,16 @@
-
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { LoadingSpinner } from './LoadingSpinner';
+import { Navigate } from 'react-router-dom';
 
 interface AdminRouteProps {
   children: React.ReactNode;
 }
 
 export const AdminRoute = ({ children }: AdminRouteProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const navigate = useNavigate();
+  const { user, isAdmin, session } = useAuth();
 
-  useEffect(() => {
-    const checkAdminStatus = () => {
-      const adminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-      const adminPermanent = localStorage.getItem('adminPermanent') === 'true';
-      
-      if (adminLoggedIn || adminPermanent) {
-        setIsAdmin(true);
-      } else {
-        navigate('/admin-access');
-      }
-      setIsLoading(false);
-    };
-
-    checkAdminStatus();
-  }, [navigate]);
-
-  if (isLoading) {
+  // Show loading while authentication is being determined
+  if (session === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center">
         <div className="text-center">
@@ -39,8 +21,14 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
     );
   }
 
+  // Redirect to auth if not logged in
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Redirect to home if not admin
   if (!isAdmin) {
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
