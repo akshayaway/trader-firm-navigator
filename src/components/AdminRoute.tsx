@@ -7,10 +7,10 @@ interface AdminRouteProps {
 }
 
 export const AdminRoute = ({ children }: AdminRouteProps) => {
-  const { user, isAdmin, session } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   // Show loading while authentication is being determined
-  if (session === undefined) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center">
         <div className="text-center">

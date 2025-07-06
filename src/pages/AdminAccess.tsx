@@ -27,15 +27,8 @@ const AdminAccess = () => {
     setIsLoading(true);
     setError('');
 
-    // Admin password check - you have permanent access
-    if (password === 'admin123' || password === 'masteradmin2024') {
-      localStorage.setItem('adminLoggedIn', 'true');
-      localStorage.setItem('adminPermanent', 'true'); // Permanent access flag
-      navigate('/admin');
-    } else {
-      setError('Invalid password. Use admin123 or masteradmin2024 for access.');
-    }
-    
+    // Redirect to proper auth page
+    navigate('/auth');
     setIsLoading(false);
   };
 
@@ -109,9 +102,9 @@ const AdminAccess = () => {
 
           <div className="mt-6 text-center">
             <p className="text-white/50 text-sm">
-              Admin Passwords: <code className="bg-white/10 px-2 py-1 rounded text-white/80">admin123</code> or <code className="bg-white/10 px-2 py-1 rounded text-white/80">masteradmin2024</code>
+              Please sign up or sign in to access admin features
             </p>
-            <p className="text-green-400 text-xs mt-2">✓ Permanent access enabled for owner</p>
+            <p className="text-blue-400 text-xs mt-2">✓ Database authentication enabled</p>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
+  loading: boolean;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -18,22 +19,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminStatus = async (userId: string) => {
-      try {
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('is_admin')
-          .eq('user_id', userId)
-          .single();
-        
-        setIsAdmin(profile?.is_admin ?? false);
-      } catch (error) {
-        setIsAdmin(false);
-      }
-    };
-
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -41,10 +29,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check database for admin status
-          checkAdminStatus(session.user.id);
+          // Defer admin check to avoid render loops
+          setTimeout(async () => {
+            try {
+              const { data: profile } = await supabase
+                .from('user_profiles')
+                .select('is_admin')
+                .eq('user_id', session.user.id)
+                .single();
+              
+              setIsAdmin(profile?.is_admin ?? false);
+              setLoading(false);
+            } catch (error) {
+              setIsAdmin(false);
+              setLoading(false);
+            }
+          }, 0);
         } else {
           setIsAdmin(false);
+          setLoading(false);
         }
       }
     );
@@ -55,8 +58,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Check database for admin status
-        checkAdminStatus(session.user.id);
+        // Defer admin check to avoid render loops
+        setTimeout(async () => {
+          try {
+            const { data: profile } = await supabase
+              .from('user_profiles')
+              .select('is_admin')
+              .eq('user_id', session.user.id)
+              .single();
+            
+            setIsAdmin(profile?.is_admin ?? false);
+            setLoading(false);
+          } catch (error) {
+            setIsAdmin(false);
+            setLoading(false);
+          }
+        }, 0);
+      } else {
+        setLoading(false);
       }
     });
 
@@ -96,6 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       user,
       session,
       isAdmin,
+      loading,
       signUp,
       signIn,
       signOut

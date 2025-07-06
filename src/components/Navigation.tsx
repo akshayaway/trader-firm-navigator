@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
 export const Navigation = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
 
   return (
     <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-50">
@@ -29,6 +29,11 @@ export const Navigation = () => {
             <Link to="/compare" className="text-gray-300 hover:text-white transition-colors">
               Compare
             </Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-yellow-400 hover:text-yellow-300 transition-colors font-semibold">
+                Admin
+              </Link>
+            )}
             {user ? (
               <Button onClick={() => signOut()} variant="outline" size="sm" className="border-slate-600 text-white hover:bg-slate-700">
                 Sign Out

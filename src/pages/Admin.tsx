@@ -1,6 +1,5 @@
 
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,45 +11,11 @@ import { AdminAccountSizes } from "@/components/admin/AdminAccountSizes";
 import { Shield, LogOut, Database, Users, Star, TrendingUp, Calculator } from "lucide-react";
 
 const Admin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAdminStatus = () => {
-      const adminStatus = localStorage.getItem('adminLoggedIn');
-      const adminPermanent = localStorage.getItem('adminPermanent');
-      setIsLoggedIn(adminStatus === 'true' || adminPermanent === 'true');
-      setIsLoading(false);
-    };
-    
-    checkAdminStatus();
-  }, []);
+  const { signOut } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('adminLoggedIn');
-    setIsLoggedIn(false);
-    window.location.href = '/';
+    signOut();
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="glass-card p-8 text-center">
-          <div className="loading-dots mx-auto mb-4">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <p className="text-white/80 text-lg">Loading Admin Dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoggedIn) {
-    return <Navigate to="/admin-access" replace />;
-  }
 
   return (
     <div className="min-h-screen">
