@@ -14,35 +14,56 @@ const AdminLogin = () => {
   // Auto-login admin user on page load
   useEffect(() => {
     const autoLoginAdmin = async () => {
-      if (!user) {
+      if (!user && !isLoading) {
         setIsLoading(true);
-        const { error } = await signIn("immortalwar777@gmail.com", "Hanuman@543");
-        
-        if (error) {
+        try {
+          const { error } = await signIn("immortalwar777@gmail.com", "Hanuman@543");
+          
+          if (error) {
+            console.error("Admin login error:", error);
+            toast({
+              title: "Auto-login failed",
+              description: error.message || "Please contact support",
+              variant: "destructive",
+            });
+            setIsLoading(false);
+          }
+          // Don't set loading to false here - let the auth state change handle it
+        } catch (err) {
+          console.error("Login exception:", err);
+          setIsLoading(false);
           toast({
-            title: "Auto-login failed",
-            description: "Please contact support",
+            title: "Login error",
+            description: "An unexpected error occurred",
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Admin logged in successfully",
-            description: "Welcome to the admin dashboard",
-          });
         }
-        setIsLoading(false);
       }
     };
 
-    autoLoginAdmin();
-  }, [user, signIn, toast]);
+    // Only auto-login if we don't have a user and aren't already loading
+    if (!user && !isLoading) {
+      autoLoginAdmin();
+    }
+  }, [user, signIn, toast, isLoading]);
 
   // Redirect to admin dashboard once logged in and verified as admin
   useEffect(() => {
     if (user && isAdmin) {
-      navigate("/admin");
+      console.log("Admin user verified, redirecting to dashboard");
+      toast({
+        title: "Welcome Admin!",
+        description: "Redirecting to dashboard...",
+      });
+      setTimeout(() => {
+        navigate("/admin");
+      }, 1000);
+    } else if (user && !isLoading) {
+      // User logged in but not admin
+      console.log("User logged in but not admin");
+      setIsLoading(false);
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, isAdmin, navigate, toast, isLoading]);
 
   const handleManualLogin = async () => {
     setIsLoading(true);
@@ -86,9 +107,15 @@ const AdminLogin = () => {
               Manual Admin Login
             </Button>
           </div>
-        ) : !isAdmin ? (
+        ) : user && !isAdmin ? (
           <div className="space-y-4">
-            <p className="text-red-300">Verifying admin privileges...</p>
+            <p className="text-red-300">Access denied - Admin privileges required</p>
+            <Button
+              onClick={() => window.location.href = "/"}
+              className="w-full btn-secondary"
+            >
+              Return to Home
+            </Button>
           </div>
         ) : (
           <div className="space-y-4">
