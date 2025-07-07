@@ -17,6 +17,7 @@ import FullReview from "./pages/FullReview";
 import FirmDetail from "./pages/FirmDetail";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/review/:firmId" element={<FullReview />} />
             <Route path="/full-review/:firmId" element={<FullReview />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin" element={
               <AdminRoute>
                 <Admin />
