@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, user, isAdmin } = useAuth();
+  const { signIn, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -88,16 +88,18 @@ const AdminLogin = () => {
         
         <h1 className="text-3xl font-bold gradient-text mb-4">Admin Access</h1>
         
-        {isLoading ? (
+        {isLoading || loading ? (
           <div className="space-y-4">
             <div className="flex items-center justify-center">
               <Lock className="w-6 h-6 text-blue-400 animate-spin mr-2" />
-              <span className="text-white">Authenticating admin...</span>
+              <span className="text-white">
+                {!user ? "Logging in admin..." : "Verifying admin privileges..."}
+              </span>
             </div>
           </div>
         ) : !user ? (
           <div className="space-y-4">
-            <p className="text-white/70">Auto-login in progress...</p>
+            <p className="text-white/70">Starting admin login...</p>
             <Button
               onClick={handleManualLogin}
               className="w-full btn-premium glow-purple"

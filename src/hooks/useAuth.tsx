@@ -21,6 +21,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Helper function to check admin status
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      console.log("Checking admin status for user:", userId);
+      const { data: profile, error } = await supabase
+        .from('user_profiles')
+        .select('is_admin')
+        .eq('user_id', userId)
+        .single();
+      
+      if (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      } else {
+        console.log("Admin status result:", profile);
+        setIsAdmin(profile?.is_admin ?? false);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Exception checking admin status:", error);
+      setIsAdmin(false);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -29,22 +54,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Defer admin check to avoid render loops
-          setTimeout(async () => {
-            try {
-              const { data: profile } = await supabase
-                .from('user_profiles')
-                .select('is_admin')
-                .eq('user_id', session.user.id)
-                .single();
-              
-              setIsAdmin(profile?.is_admin ?? false);
-              setLoading(false);
-            } catch (error) {
-              setIsAdmin(false);
-              setLoading(false);
-            }
-          }, 0);
+          // Check admin status immediately
+          checkAdminStatus(session.user.id);
         } else {
           setIsAdmin(false);
           setLoading(false);
@@ -58,22 +69,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        // Defer admin check to avoid render loops
-        setTimeout(async () => {
-          try {
-            const { data: profile } = await supabase
-              .from('user_profiles')
-              .select('is_admin')
-              .eq('user_id', session.user.id)
-              .single();
-            
-            setIsAdmin(profile?.is_admin ?? false);
-            setLoading(false);
-          } catch (error) {
-            setIsAdmin(false);
-            setLoading(false);
-          }
-        }, 0);
+        // Check admin status immediately
+        checkAdminStatus(session.user.id);
       } else {
         setLoading(false);
       }
